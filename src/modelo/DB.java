@@ -39,26 +39,46 @@ public class DB {
         agregarCliente(p.getNombre(),p.getActividad(),p.getId_est(),p.getEstado());
     }
  
-/*    
-    public void modificarCliente(int id,String nombre, String actividad, LocalDate fecha, int id_est, String estado){
+    public LocalDate fecha(int id){
+        LocalDate fecha = null;
+        try{
+            Connection c = getConnection();
+            String sql = "SELECT fecha from cliente where id='%1'";
+            sql = sql.replace("%1", Integer.toString(id));
+            ResultSet res = c.createStatement().executeQuery(sql);
+            if (res.next()){
+                if (res.wasNull()){
+                    fecha = null;
+                }
+                else{
+                    fecha = res.getDate("fecha").toLocalDate();
+                }                
+            }            
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+        return fecha;
+    }
+             
+    public void modificarCliente(int id,String nombre, String actividad, int id_est, String estado){
         String sql = "UPDATE cliente SET nombre='%1',actividad= '%2',id_est= '%3', estado='%4' WHERE id='%5'";
         sql = sql.replace("%5", Integer.toString(id));
         sql = sql.replace("%1", nombre);
         sql = sql.replace("%2", actividad);        
-
+       
         LocalDate fecha_actual = LocalDate.now();
-        LocalDate fecha30 = fecha.plusDays(30);                
-        LocalDate fecha35 = fecha.plusDays(35);
+        LocalDate fecha30 = fecha(id).plusDays(30);                
+        LocalDate fecha35 = fecha(id).plusDays(35);
         
-        if ((id_est == 1) || (fecha_actual.isBefore(fecha30))){ //abonado
+        if ((fecha_actual.isBefore(fecha30))){ //abonado
             sql = sql.replace("%3", Integer.toString(1));
             sql = sql.replace("%4", "Abonado");
         }   
-        if ((id_est == 2)|| (((fecha_actual.isAfter(fecha30)))&(fecha.isBefore(fecha35)))){ //debe abonar
+        if ((((fecha_actual.isAfter(fecha30)))&(fecha_actual.isBefore(fecha35)))){ //debe abonar
             sql = sql.replace("%3", Integer.toString(2));
             sql = sql.replace("%4", "Falta Abonar");
         }
-        if ((id_est == 3)|| (fecha_actual.isAfter(fecha35))){ //debe abonar
+        if ((fecha_actual.isAfter(fecha35))){ //debe abonar
             sql = sql.replace("%3", Integer.toString(3));
             sql = sql.replace("%4", "Deudor");
         }
@@ -66,9 +86,9 @@ public class DB {
         ejecutar(sql);
     }
     public void modificarCliente(Clientes p){
-        modificarCliente(p.getId(),p.getNombre(),p.getActividad(),p.getFecha(),p.getId_est(),p.getEstado());    
+        modificarCliente(p.getId(),p.getNombre(),p.getActividad(),p.getId_est(),p.getEstado());    
     }
-  */
+    
     
     public void eliminarCliente(int id){
         String sql = "DELETE FROM cliente WHERE id= '%1'";
@@ -109,6 +129,7 @@ public class DB {
                 p.setId(res.getInt("id"));
                 p.setNombre(res.getString("nombre"));
                 p.setActividad(res.getString("Actividad"));
+                p.setFecha(res.getDate("fecha").toLocalDate());
                 p.setId_est(res.getInt("id_est"));
                 p.setEstado(res.getString("estado"));
                 clientes.add(p);

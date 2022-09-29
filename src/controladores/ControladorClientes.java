@@ -37,24 +37,28 @@ public class ControladorClientes {
         db.agregarCliente(nombre, actividad,id_est,estado);
         cargarTabla();
     }
-/*    
+    
     public static void botonModificar() {
+        /*DefaultTableModel datos = (DefaultTableModel) ventana.getjTable1().getModel();
+        int row = ventana.getjTable1().getSelectedRow();*/
+        
         int id = Integer.parseInt(ventana.getId().getText());
         String nombre = ventana.getNombre().getText();
         String actividad = ventana.getActividad().getText();
+        //LocalDate fecha = LocalDate.parse(datos.getValueAt(row, 4).toString());
         int id_est = Integer.parseInt(ventana.getId_est().getText());
         String estado = ventana.getEstado().getText();
         
-        db.modificarCliente(id,nombre,actividad,id_est,estado);
+        db.modificarCliente(id,nombre,actividad,fecha,id_est,estado);
         cargarTabla();
-    }*/
+    }
     
     public static void botonBuscar(){
         int id = Integer.parseInt(ventana.getId().getText());
         Clientes p = db.buscar(id);        
         ventana.getNombre().setText(p.getNombre());
-        ventana.getActividad().setText(p.getActividad());
-        ventana.getId_est().setText( Integer.toString(p.getId_est()) );
+        ventana.getActividad().setText(p.getActividad());    
+        ventana.getId_est().setText(Integer.toString(p.getId_est()));
         ventana.getEstado().setText(p.getEstado());
     }
     
